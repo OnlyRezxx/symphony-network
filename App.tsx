@@ -4,6 +4,9 @@ import { Navbar } from './components/Navbar';
 import { FormSection } from './components/FormSection';
 import { BentoGrid } from './components/BentoGrid';
 
+// Define the API URL (Environment Variable or Localhost fallback)
+export const API_BASE_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:3000';
+
 // Define the shape of the config data coming from backend
 export interface AppConfig {
   isOpen: boolean;
@@ -34,7 +37,9 @@ const App = () => {
     setIsLoading(true);
     setError(false);
     
-    fetch('http://localhost:3000/api/config')
+    console.log("Fetching config from:", `${API_BASE_URL}/api/config`);
+
+    fetch(`${API_BASE_URL}/api/config`)
       .then(res => {
         if (!res.ok) throw new Error("Failed to fetch config");
         return res.json();
@@ -104,6 +109,9 @@ const App = () => {
                 </div>
                 <h2 className="text-xl font-bold text-white mb-2">{t.errorTitle}</h2>
                 <p className="text-zinc-500 mb-8 text-sm leading-relaxed">{t.errorDesc}</p>
+                <div className="text-xs font-mono text-zinc-600 mb-4 bg-black/50 p-2 rounded border border-white/5">
+                    Target: {API_BASE_URL}
+                </div>
                 <button 
                     onClick={fetchConfig} 
                     className="px-6 py-3 bg-white text-black rounded-xl text-sm font-bold hover:bg-zinc-200 transition-all hover:-translate-y-0.5 shadow-lg active:translate-y-0"
